@@ -337,23 +337,14 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(loadedStyle);
 
-    // Hero carousel: full-screen rotating background images
-    const slides = document.querySelectorAll('.hero-carousel .carousel-slide');
-    if (slides && slides.length > 0) {
-        // Apply background images from data-bg
-        slides.forEach(slide => {
-            const bg = slide.getAttribute('data-bg');
-            if (bg) {
-                slide.style.backgroundImage = `url('${bg}')`;
-                slide.style.backgroundSize = 'cover';
-                slide.style.backgroundPosition = 'center';
-                slide.style.backgroundRepeat = 'no-repeat';
-            }
-        });
-
-        // Full-screen carousel styles with !important to override existing CSS
-        const carouselStyle = document.createElement('style');
-        carouselStyle.textContent = `
+    // Hero video: full-screen background video with fallback
+    const heroVideo = document.querySelector('.hero-video');
+    const heroVideoContainer = document.querySelector('.hero-video-container');
+    
+    if (heroVideo && heroVideoContainer) {
+        // Full-screen video styles with !important to override existing CSS
+        const videoStyle = document.createElement('style');
+        videoStyle.textContent = `
             .hero { 
                 position: relative !important; 
                 min-height: 100vh !important; 
@@ -362,25 +353,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 margin: 0 !important;
                 padding: 0 !important;
             }
-            .hero-carousel { 
+            .hero-video-container { 
                 position: absolute !important; 
                 top: 0 !important; 
                 left: 0 !important; 
                 width: 100% !important; 
                 height: 100% !important; 
                 z-index: 1 !important;
+                overflow: hidden !important;
             }
-            .carousel-slide { 
+            .hero-video { 
+                position: absolute !important; 
+                top: 50% !important; 
+                left: 50% !important; 
+                min-width: 100% !important; 
+                min-height: 100% !important; 
+                width: auto !important; 
+                height: auto !important; 
+                transform: translate(-50%, -50%) !important;
+                object-fit: cover !important;
+                z-index: 1 !important;
+            }
+            .hero-fallback { 
                 position: absolute !important; 
                 top: 0 !important; 
                 left: 0 !important; 
                 width: 100% !important; 
                 height: 100% !important; 
-                opacity: 0 !important; 
-                transition: opacity 1.2s ease-in-out !important;
-            }
-            .carousel-slide.active { 
-                opacity: 1 !important; 
+                z-index: 0 !important;
             }
             .hero-overlay { 
                 position: absolute !important; 
@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 width: 100% !important; 
                 height: 100% !important; 
                 z-index: 2 !important; 
-                background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%) !important; 
+                background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 100%) !important; 
                 display: flex !important; 
                 align-items: center !important; 
                 justify-content: center !important;
@@ -407,29 +407,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 font-size: 3.5rem !important; 
                 font-weight: 700 !important; 
                 margin-bottom: 1rem !important; 
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.7) !important;
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.8) !important;
                 line-height: 1.2 !important;
+                animation: fadeInUp 1s ease-out !important;
             }
             .hero-subtitle { 
                 font-size: 2rem !important; 
                 font-weight: 500 !important; 
                 margin-bottom: 1.5rem !important; 
-                text-shadow: 1px 1px 3px rgba(0,0,0,0.7) !important;
+                text-shadow: 1px 1px 6px rgba(0,0,0,0.8) !important;
+                animation: fadeInUp 1s ease-out 0.2s both !important;
             }
             .hero-description { 
                 font-size: 1.2rem !important; 
                 margin-bottom: 2rem !important; 
                 line-height: 1.6 !important; 
-                text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+                text-shadow: 1px 1px 4px rgba(0,0,0,0.8) !important;
                 max-width: 800px !important;
                 margin-left: auto !important;
                 margin-right: auto !important;
+                animation: fadeInUp 1s ease-out 0.4s both !important;
             }
             .hero-buttons { 
                 display: flex !important; 
                 gap: 1rem !important; 
                 justify-content: center !important; 
                 flex-wrap: wrap !important; 
+                animation: fadeInUp 1s ease-out 0.6s both !important;
             }
             .btn { 
                 padding: 12px 30px !important; 
@@ -459,6 +463,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 background: rgba(255,255,255,0.3) !important; 
                 transform: translateY(-2px) !important; 
             }
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
             @media (max-width: 768px) { 
                 .hero-title { font-size: 2.5rem !important; }
                 .hero-subtitle { font-size: 1.5rem !important; }
@@ -467,18 +481,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 .hero-container { padding: 0 15px !important; }
             }
         `;
-        document.head.appendChild(carouselStyle);
+        document.head.appendChild(videoStyle);
 
-        let currentIndex = 0;
-        const showSlide = (index) => {
-            slides.forEach((s, i) => s.classList.toggle('active', i === index));
-        };
+        // Video event handlers
+        heroVideo.addEventListener('loadeddata', function() {
+            console.log('Hero video loaded successfully');
+        });
 
-        // Auto-rotate every 5 seconds
-        setInterval(() => {
-            currentIndex = (currentIndex + 1) % slides.length;
-            showSlide(currentIndex);
-        }, 5000);
+        heroVideo.addEventListener('error', function() {
+            console.log('Video failed to load, using fallback image');
+            // Fallback image will be shown automatically
+        });
+
+        // Ensure video plays on mobile devices
+        heroVideo.addEventListener('canplay', function() {
+            this.play().catch(e => {
+                console.log('Autoplay prevented:', e);
+            });
+        });
+
+        // Pause video when page is not visible (performance optimization)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                heroVideo.pause();
+            } else {
+                heroVideo.play().catch(e => {
+                    console.log('Video play prevented:', e);
+                });
+            }
+        });
     }
 });
 
