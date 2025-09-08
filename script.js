@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(loadedStyle);
 
-    // Hero carousel: rotate 3 images (AI x EDU theme)
+    // Hero carousel: full-screen rotating background images
     const slides = document.querySelectorAll('.hero-carousel .carousel-slide');
     if (slides && slides.length > 0) {
         // Apply background images from data-bg
@@ -347,16 +347,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 slide.style.backgroundImage = `url('${bg}')`;
                 slide.style.backgroundSize = 'cover';
                 slide.style.backgroundPosition = 'center';
+                slide.style.backgroundRepeat = 'no-repeat';
             }
         });
 
-        // Minimal inline styles to ensure layout if CSS missing
+        // Full-screen carousel styles
         const carouselStyle = document.createElement('style');
         carouselStyle.textContent = `
-            .hero-carousel { position: relative; width: 100%; height: 320px; overflow: hidden; border-radius: 16px; }
-            .carousel-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease; }
+            .hero { position: relative; min-height: 100vh; overflow: hidden; }
+            .hero-carousel { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+            .carousel-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s ease-in-out; }
             .carousel-slide.active { opacity: 1; }
-            @media (min-width: 992px) { .hero-carousel { height: 420px; } }
+            .hero-overlay { position: relative; z-index: 2; background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%); min-height: 100vh; display: flex; align-items: center; }
+            .hero-container { width: 100%; }
+            .hero-content { text-align: center; color: white; }
+            .hero-title { font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+            .hero-subtitle { font-size: 2rem; font-weight: 500; margin-bottom: 1.5rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+            .hero-description { font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.6; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+            .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+            .btn { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
+            .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+            .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
+            .btn-secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); backdrop-filter: blur(10px); }
+            .btn-secondary:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+            @media (max-width: 768px) { 
+                .hero-title { font-size: 2.5rem; }
+                .hero-subtitle { font-size: 1.5rem; }
+                .hero-description { font-size: 1rem; }
+                .hero-buttons { flex-direction: column; align-items: center; }
+            }
         `;
         document.head.appendChild(carouselStyle);
 
@@ -365,10 +384,11 @@ document.addEventListener('DOMContentLoaded', function() {
             slides.forEach((s, i) => s.classList.toggle('active', i === index));
         };
 
+        // Auto-rotate every 5 seconds
         setInterval(() => {
             currentIndex = (currentIndex + 1) % slides.length;
             showSlide(currentIndex);
-        }, 4000);
+        }, 5000);
     }
 });
 
