@@ -351,30 +351,120 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Full-screen carousel styles
+        // Full-screen carousel styles with !important to override existing CSS
         const carouselStyle = document.createElement('style');
         carouselStyle.textContent = `
-            .hero { position: relative; min-height: 100vh; overflow: hidden; }
-            .hero-carousel { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-            .carousel-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s ease-in-out; }
-            .carousel-slide.active { opacity: 1; }
-            .hero-overlay { position: relative; z-index: 2; background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%); min-height: 100vh; display: flex; align-items: center; }
-            .hero-container { width: 100%; }
-            .hero-content { text-align: center; color: white; }
-            .hero-title { font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-            .hero-subtitle { font-size: 2rem; font-weight: 500; margin-bottom: 1.5rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
-            .hero-description { font-size: 1.2rem; margin-bottom: 2rem; line-height: 1.6; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
-            .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-            .btn { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
-            .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
-            .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
-            .btn-secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); backdrop-filter: blur(10px); }
-            .btn-secondary:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+            .hero { 
+                position: relative !important; 
+                min-height: 100vh !important; 
+                height: 100vh !important;
+                overflow: hidden !important; 
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .hero-carousel { 
+                position: absolute !important; 
+                top: 0 !important; 
+                left: 0 !important; 
+                width: 100% !important; 
+                height: 100% !important; 
+                z-index: 1 !important;
+            }
+            .carousel-slide { 
+                position: absolute !important; 
+                top: 0 !important; 
+                left: 0 !important; 
+                width: 100% !important; 
+                height: 100% !important; 
+                opacity: 0 !important; 
+                transition: opacity 1.2s ease-in-out !important;
+            }
+            .carousel-slide.active { 
+                opacity: 1 !important; 
+            }
+            .hero-overlay { 
+                position: absolute !important; 
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important; 
+                height: 100% !important; 
+                z-index: 2 !important; 
+                background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 100%) !important; 
+                display: flex !important; 
+                align-items: center !important; 
+                justify-content: center !important;
+            }
+            .hero-container { 
+                width: 100% !important; 
+                max-width: 1200px !important;
+                padding: 0 20px !important;
+            }
+            .hero-content { 
+                text-align: center !important; 
+                color: white !important; 
+            }
+            .hero-title { 
+                font-size: 3.5rem !important; 
+                font-weight: 700 !important; 
+                margin-bottom: 1rem !important; 
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.7) !important;
+                line-height: 1.2 !important;
+            }
+            .hero-subtitle { 
+                font-size: 2rem !important; 
+                font-weight: 500 !important; 
+                margin-bottom: 1.5rem !important; 
+                text-shadow: 1px 1px 3px rgba(0,0,0,0.7) !important;
+            }
+            .hero-description { 
+                font-size: 1.2rem !important; 
+                margin-bottom: 2rem !important; 
+                line-height: 1.6 !important; 
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+                max-width: 800px !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            .hero-buttons { 
+                display: flex !important; 
+                gap: 1rem !important; 
+                justify-content: center !important; 
+                flex-wrap: wrap !important; 
+            }
+            .btn { 
+                padding: 12px 30px !important; 
+                border-radius: 50px !important; 
+                text-decoration: none !important; 
+                font-weight: 600 !important; 
+                transition: all 0.3s ease !important;
+                display: inline-block !important;
+            }
+            .btn-primary { 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; 
+                color: white !important; 
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+                border: none !important;
+            }
+            .btn-primary:hover { 
+                transform: translateY(-2px) !important; 
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important; 
+            }
+            .btn-secondary { 
+                background: rgba(255,255,255,0.2) !important; 
+                color: white !important; 
+                border: 2px solid rgba(255,255,255,0.3) !important; 
+                backdrop-filter: blur(10px) !important;
+            }
+            .btn-secondary:hover { 
+                background: rgba(255,255,255,0.3) !important; 
+                transform: translateY(-2px) !important; 
+            }
             @media (max-width: 768px) { 
-                .hero-title { font-size: 2.5rem; }
-                .hero-subtitle { font-size: 1.5rem; }
-                .hero-description { font-size: 1rem; }
-                .hero-buttons { flex-direction: column; align-items: center; }
+                .hero-title { font-size: 2.5rem !important; }
+                .hero-subtitle { font-size: 1.5rem !important; }
+                .hero-description { font-size: 1rem !important; }
+                .hero-buttons { flex-direction: column !important; align-items: center !important; }
+                .hero-container { padding: 0 15px !important; }
             }
         `;
         document.head.appendChild(carouselStyle);
