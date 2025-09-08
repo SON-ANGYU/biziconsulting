@@ -376,14 +376,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 z-index: 1 !important;
                 border: none !important;
             }
-            .hero-fallback { 
-                position: absolute !important; 
-                top: 0 !important; 
-                left: 0 !important; 
-                width: 100% !important; 
-                height: 100% !important; 
-                z-index: 0 !important;
-            }
             .hero-overlay { 
                 position: absolute !important; 
                 top: 0 !important;
@@ -492,41 +484,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const activateCarouselFallback = () => {
             if (fallbackActivated) return;
             fallbackActivated = true;
-            // Inject carousel DOM just in time
-            const heroSection = document.querySelector('.hero');
-            if (!heroSection) return;
-            const carousel = document.createElement('div');
-            carousel.className = 'hero-carousel';
-            carousel.innerHTML = `
-                <div class="carousel-slide active" data-bg="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3"></div>
-                <div class="carousel-slide" data-bg="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3"></div>
-                <div class="carousel-slide" data-bg="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3"></div>
-            `;
-            heroSection.insertBefore(carousel, document.querySelector('.hero-overlay'));
-
-            // Apply minimal styles and start rotation
-            const slides = carousel.querySelectorAll('.carousel-slide');
-            slides.forEach(slide => {
-                const bg = slide.getAttribute('data-bg');
-                slide.style.backgroundImage = `url('${bg}')`;
-                slide.style.backgroundSize = 'cover';
-                slide.style.backgroundPosition = 'center';
-                slide.style.backgroundRepeat = 'no-repeat';
-            });
-
-            const style = document.createElement('style');
-            style.textContent = `
-                .hero-carousel { position: absolute; inset: 0; z-index: 1; }
-                .carousel-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease-in-out; }
-                .carousel-slide.active { opacity: 1; }
-            `;
-            document.head.appendChild(style);
-
-            let idx = 0;
-            setInterval(() => {
-                idx = (idx + 1) % slides.length;
-                slides.forEach((s, i) => s.classList.toggle('active', i === idx));
-            }, 5000);
+            // Fallback disabled - no image carousel
+            console.log('YouTube iframe failed, no fallback images will be shown');
         };
 
         // YouTube iframe load event
