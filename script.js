@@ -337,11 +337,11 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(loadedStyle);
 
-    // Hero video: full-screen background video with fallback
-    const heroVideo = document.querySelector('.hero-video');
+    // Hero YouTube video: full-screen background iframe with fallback
+    const heroYouTubeVideo = document.querySelector('.hero-youtube-video');
     const heroVideoContainer = document.querySelector('.hero-video-container');
     
-    if (heroVideo && heroVideoContainer) {
+    if (heroYouTubeVideo && heroVideoContainer) {
         // Full-screen video styles with !important to override existing CSS
         const videoStyle = document.createElement('style');
         videoStyle.textContent = `
@@ -362,17 +362,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 z-index: 1 !important;
                 overflow: hidden !important;
             }
-            .hero-video { 
+            .hero-youtube-video { 
                 position: absolute !important; 
                 top: 50% !important; 
                 left: 50% !important; 
                 min-width: 100% !important; 
                 min-height: 100% !important; 
-                width: auto !important; 
-                height: auto !important; 
+                width: 177.78vh !important; 
+                height: 56.25vw !important; 
+                min-width: 100% !important; 
+                min-height: 100% !important; 
                 transform: translate(-50%, -50%) !important;
-                object-fit: cover !important;
                 z-index: 1 !important;
+                border: none !important;
             }
             .hero-fallback { 
                 position: absolute !important; 
@@ -483,33 +485,69 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(videoStyle);
 
-        // Video event handlers
-        heroVideo.addEventListener('loadeddata', function() {
-            console.log('Hero video loaded successfully');
-        });
+        // YouTube iframe event handlers & fallback
+        let iframeReady = false;
+        let fallbackActivated = false;
 
-        heroVideo.addEventListener('error', function() {
-            console.log('Video failed to load, using fallback image');
-            // Fallback image will be shown automatically
-        });
+        const activateCarouselFallback = () => {
+            if (fallbackActivated) return;
+            fallbackActivated = true;
+            // Inject carousel DOM just in time
+            const heroSection = document.querySelector('.hero');
+            if (!heroSection) return;
+            const carousel = document.createElement('div');
+            carousel.className = 'hero-carousel';
+            carousel.innerHTML = `
+                <div class="carousel-slide active" data-bg="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3"></div>
+                <div class="carousel-slide" data-bg="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3"></div>
+                <div class="carousel-slide" data-bg="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3"></div>
+            `;
+            heroSection.insertBefore(carousel, document.querySelector('.hero-overlay'));
 
-        // Ensure video plays on mobile devices
-        heroVideo.addEventListener('canplay', function() {
-            this.play().catch(e => {
-                console.log('Autoplay prevented:', e);
+            // Apply minimal styles and start rotation
+            const slides = carousel.querySelectorAll('.carousel-slide');
+            slides.forEach(slide => {
+                const bg = slide.getAttribute('data-bg');
+                slide.style.backgroundImage = `url('${bg}')`;
+                slide.style.backgroundSize = 'cover';
+                slide.style.backgroundPosition = 'center';
+                slide.style.backgroundRepeat = 'no-repeat';
             });
+
+            const style = document.createElement('style');
+            style.textContent = `
+                .hero-carousel { position: absolute; inset: 0; z-index: 1; }
+                .carousel-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease-in-out; }
+                .carousel-slide.active { opacity: 1; }
+            `;
+            document.head.appendChild(style);
+
+            let idx = 0;
+            setInterval(() => {
+                idx = (idx + 1) % slides.length;
+                slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+            }, 5000);
+        };
+
+        // YouTube iframe load event
+        heroYouTubeVideo.addEventListener('load', function() {
+            iframeReady = true;
+            console.log('YouTube iframe loaded successfully');
         });
 
-        // Pause video when page is not visible (performance optimization)
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                heroVideo.pause();
-            } else {
-                heroVideo.play().catch(e => {
-                    console.log('Video play prevented:', e);
-                });
-            }
+        // Fallback if iframe fails to load
+        heroYouTubeVideo.addEventListener('error', function() {
+            console.log('YouTube iframe failed to load, using fallback');
+            activateCarouselFallback();
         });
+
+        // If iframe not ready within 5 seconds, fallback
+        setTimeout(() => {
+            if (!iframeReady) {
+                console.log('YouTube iframe timeout, using fallback');
+                activateCarouselFallback();
+            }
+        }, 5000);
     }
 });
 
