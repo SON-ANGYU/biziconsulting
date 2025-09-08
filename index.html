@@ -176,7 +176,7 @@
                     </div>
                     <h3>스마트폰활용지도사</h3>
                     <p>스마트폰을 활용한 교육 및 지도 전문가</p>
-                    <a href="#" class="course-link">자세히 보기 <i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="course-link" onclick="showCourseDetail('smartphone')">자세히 보기 <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="course-card">
@@ -185,7 +185,7 @@
                     </div>
                     <h3>AI리터러시전문지도사</h3>
                     <p>AI 활용 능력과 리터러시 교육 전문가</p>
-                    <a href="#" class="course-link">자세히 보기 <i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="course-link" onclick="showCourseDetail('ai-literacy')">자세히 보기 <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="course-card">
@@ -194,7 +194,7 @@
                     </div>
                     <h3>AI영상콘텐츠지도사</h3>
                     <p>AI 기반 영상 콘텐츠 제작 및 교육 전문가</p>
-                    <a href="#" class="course-link">자세히 보기 <i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="course-link" onclick="showCourseDetail('ai-video')">자세히 보기 <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="course-card">
@@ -203,7 +203,7 @@
                     </div>
                     <h3>디지털리터러시지도사</h3>
                     <p>디지털 환경에서의 정보 활용 능력 교육 전문가</p>
-                    <a href="#" class="course-link">자세히 보기 <i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="course-link" onclick="showCourseDetail('digital-literacy')">자세히 보기 <i class="fas fa-arrow-right"></i></a>
                 </div>
                 
                 <div class="course-card">
@@ -212,7 +212,7 @@
                     </div>
                     <h3>동화출판지도사</h3>
                     <p>동화책 기획, 제작 및 출판 교육 전문가</p>
-                    <a href="#" class="course-link">자세히 보기 <i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="course-link" onclick="showCourseDetail('storybook')">자세히 보기 <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -397,6 +397,53 @@
             </div>
         </div>
     </footer>
+
+    <!-- Course Detail Modal -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCourseDetail()">&times;</span>
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon"></div>
+                <h2 id="modalTitle"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="course-overview">
+                    <h3>과정 개요</h3>
+                    <p id="modalOverview"></p>
+                </div>
+                <div class="course-details">
+                    <h3>세부 내용</h3>
+                    <ul id="modalDetails"></ul>
+                </div>
+                <div class="course-info">
+                    <div class="info-row">
+                        <span class="info-label">수업 시간:</span>
+                        <span id="modalDuration"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">수강료:</span>
+                        <span id="modalPrice"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">수업 방식:</span>
+                        <span id="modalMethod"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">자격증 발급:</span>
+                        <span id="modalCertification"></span>
+                    </div>
+                </div>
+                <div class="course-benefits">
+                    <h3>취득 후 혜택</h3>
+                    <ul id="modalBenefits"></ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="openConsultation()">상담 신청하기</button>
+                <button class="btn btn-secondary" onclick="closeCourseDetail()">닫기</button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
