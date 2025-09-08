@@ -336,6 +336,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(loadedStyle);
+
+    // Hero carousel: rotate 3 images (AI x EDU theme)
+    const slides = document.querySelectorAll('.hero-carousel .carousel-slide');
+    if (slides && slides.length > 0) {
+        // Apply background images from data-bg
+        slides.forEach(slide => {
+            const bg = slide.getAttribute('data-bg');
+            if (bg) {
+                slide.style.backgroundImage = `url('${bg}')`;
+                slide.style.backgroundSize = 'cover';
+                slide.style.backgroundPosition = 'center';
+            }
+        });
+
+        // Minimal inline styles to ensure layout if CSS missing
+        const carouselStyle = document.createElement('style');
+        carouselStyle.textContent = `
+            .hero-carousel { position: relative; width: 100%; height: 320px; overflow: hidden; border-radius: 16px; }
+            .carousel-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease; }
+            .carousel-slide.active { opacity: 1; }
+            @media (min-width: 992px) { .hero-carousel { height: 420px; } }
+        `;
+        document.head.appendChild(carouselStyle);
+
+        let currentIndex = 0;
+        const showSlide = (index) => {
+            slides.forEach((s, i) => s.classList.toggle('active', i === index));
+        };
+
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        }, 4000);
+    }
 });
 
 // Utility functions
